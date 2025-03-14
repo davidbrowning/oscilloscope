@@ -1,0 +1,10 @@
+[package]
+name = "oscilloscope"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+cpal = "0.15"
+egui = "0.27"
+egui_plot = "0.27"
+eframe = "0.27"
