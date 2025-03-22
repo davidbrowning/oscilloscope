@@ -62,8 +62,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (sys_tx, sys_rx) = channel::<f32>();
     let (mic_tx, mic_rx) = channel::<f32>();
     
-    let mut sys_stream = build_audio_stream(AudioSource::SystemOutput, sys_tx.clone())?;
-    let mut mic_stream = build_audio_stream(AudioSource::Microphone, mic_tx.clone())?;
+    let sys_stream = build_audio_stream(AudioSource::SystemOutput, sys_tx.clone())?;
+    let mic_stream = build_audio_stream(AudioSource::Microphone, mic_tx.clone())?;
     
     sys_stream.stream.play()?;
     mic_stream.stream.play()?;
