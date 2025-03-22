@@ -4,6 +4,10 @@ use egui_plot::{Plot, Line};
 use std::sync::mpsc::{channel, Receiver, Sender};
 use std::collections::VecDeque;
 
+use egui::{
+    Color32,
+};
+
 enum AudioSource {
     Microphone,
     SystemOutput,
@@ -68,6 +72,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     sys_stream.stream.play()?;
     mic_stream.stream.play()?;
 
+	let mut visuals = egui::Visuals::dark();
+	visuals.window_fill = egui::Color32::from_rgba_premultiplied(30, 30, 30, 255);
+    let ctx = egui::Context::default();
+	ctx.set_visuals(visuals);
+
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([800.0, 600.0]),
@@ -77,7 +86,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     eframe::run_native(
         "Oscilloscope",
         options,
-        Box::new(move |_cc| Box::new(MyApp {
+        Box::new(move |ctx| Box::new(MyApp {
             sys_rx,
             mic_rx,
             sys_samples: VecDeque::new(),
@@ -107,6 +116,9 @@ struct MyApp {
 
 impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+   	    let mut visuals = egui::Visuals::dark();
+   	    visuals.window_fill = egui::Color32::from_rgba_premultiplied(30, 30, 30, 255);
+	    ctx.set_visuals(visuals);
         egui::CentralPanel::default().show(ctx, |ui| {
             // Collect system output samples
             while let Ok(sample) = self.sys_rx.try_recv() {
@@ -153,7 +165,7 @@ impl eframe::App for MyApp {
                             [i as f64, y as f64]
                         })
                         .collect();
-                    plot_ui.line(Line::new(points));
+                    plot_ui.line(Line::new(points).color(Color32::from_rgb(0, 191, 255)));
                 });
 
             ui.label("Residual (Mic - System)");
